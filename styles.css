@@ -9,7 +9,7 @@
 /* Basic styling for body */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #bca6a6;
+    background-color: #100079;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,7 +18,7 @@ body {
 
 /* Container for login and forms */
 .container {
-    background-color: #6b5555;
+    background-color: #f6f6f6;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

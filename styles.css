@@ -1,0 +1,133 @@
+/* Reset some default styles */
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic styling for body */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #bca6a6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container for login and forms */
+.container {
+    background-color: #6b5555;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Input form styling */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Styling for feature list */
+.features {
+    margin-top: 30px;
+}
+
+.features h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.features ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.features li {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.features li i {
+    color: #007bff;
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Set the default height for the map */
+#map {
+    height: 400px; /* Default height for desktop */
+    width: 100%;
+}
+
+/* Adjust the height for tablets */
+@media (max-width: 768px) {
+    #map {
+        height: 300px;
+    }
+}
+
+/* Adjust the height for mobile devices */
+@media (max-width: 480px) {
+    #map {
+        height: 250px;
+    }
+}
+
+/* Button styles for all buttons */
+.btn {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Darker color on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.btn:active {
+    background-color: #004099; /* Darker for active state */
+    transform: scale(1); /* Reset scale */
+}

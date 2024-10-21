@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Safety Alerts</title>
+    <link rel="stylesheet" href="community.css"> <!-- Link to your CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <header>
+        <h1>Community Safety Alerts</h1>
+        <input type="text" id="search" placeholder="Search incidents...">
+    </header>
+
+    <main>
+        <section class="incident-list">
+            <h2>Recent Incidents</h2>
+            <div class="incident-card">
+                <h3>Burglary on Elm Street</h3>
+                <p>Date: 10/20/2024</p>
+                <p>Location: Elm St, City, State</p>
+                <p>Type: Theft</p>
+                <p>Status: Ongoing</p>
+                <a href="#" class="details-button">View Details</a>
+            </div>
+            <div class="incident-card">
+                <h3>Vandalism at Park</h3>
+                <p>Date: 10/18/2024</p>
+                <p>Location: Central Park, City, State</p>
+                <p>Type: Vandalism</p>
+                <p>Status: Resolved</p>
+                <a href="#" class="details-button">View Details</a>
+            </div>
+            <!-- Add more incident cards as needed -->
+        </section>
+
+        <aside>
+            <h2>Filter Options</h2>
+            <label for="crime-type">Type of Crime:</label>
+            <select id="crime-type">
+                <option value="all">All</option>
+                <option value="theft">Theft</option>
+                <option value="vandalism">Vandalism</option>
+                <option value="assault">Assault</option>
+                <!-- Add more options -->
+            </select>
+
+            <label for="date-range">Date Range:</label>
+            <input type="date" id="start-date"> to <input type="date" id="end-date">
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" placeholder="Enter neighborhood...">
+
+            <button id="filter-button">Apply Filters</button>
+
+            <h2>Report an Incident</h2>
+            <form id="incident-form">
+                <input type="text" placeholder="Title" required>
+                <textarea placeholder="Description" required></textarea>
+                <input type="text" placeholder="Location" required>
+                <select>
+                    <option value="">Select Type</option>
+                    <option value="theft">Theft</option>
+                    <option value="vandalism">Vandalism</option>
+                    <!-- More options -->
+                </select>
+                <input type="file" accept="image/*">
+                <button type="submit">Submit Report</button>
+            </form>
+        </aside>
+    </main>
+
+    <section id="map"></section>
+
+    <footer>
+        <h2>Emergency Resources</h2>
+        <p>Contact local authorities: Police - 911, Fire Department - 911</p>
+        <p><a href="#">Neighborhood Watch Groups</a></p>
+        <p><a href="#">Safety Tips</a></p>
+
+        <h2>Announcements</h2>
+        <ul>
+            <li>Community Safety Meeting on 10/25/2024</li>
+            <li>New neighborhood watch program starting in November!</li>
+        </ul>
+
+        <p>Contact us at [mboginen@gitam.in]</p>
+        <p>© 2024 Community Safety Alerts</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

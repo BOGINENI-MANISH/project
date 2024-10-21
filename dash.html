@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Full height for body and html */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        /* Container for the dashboard */
+        .container-fluid {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Full height for map */
+        #map {
+            flex: 1; /* Fills remaining space */
+            width: 100%;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            font-size: 18px;
+            color: #007bff;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner::after {
+            content: " ";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #007bff;
+            border-top: 3px solid #f4f4f4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Add transitions and hover effects for buttons */
+        .btn {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%; /* Full width for buttons */
+        }
+
+        .btn:hover {
+            background-color: #471e1e9d; /* Darker color on hover */
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .btn:active {
+            background-color: #004099; /* Even darker for active state */
+            transform: scale(1); /* Reset scale on click */
+        }
+
+        /* Desktop-specific styles */
+        @media (min-width: 769px) {
+            .features {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .list-group-item {
+                flex: 1 1 45%; /* Two buttons per row */
+                margin: 10px; /* Space between buttons */
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <a class="navbar-brand" href="#">Dashboard</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="features.html">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="row mt-4" style="flex: 0 0 auto;">
+            <div class="col-md-12">
+                <h1 class="text-primary">Key Features</h1>
+                <div class="features">
+                    <h2>Interactive Features</h2>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <button id="locationButton" class="btn btn-info"><i class="fas fa-map-marker-alt"></i> Real-time Location Tracking</button>
+                        </li>
+                        <li class="list-group-item">
+                            <button id="emergencyButton" class="btn btn-danger"><i class="fas fa-phone-alt"></i> Emergency Contact Form</button>
+                        </li>
+                        <li class="list-group-item">
+                            <button id="panicButton" class="btn btn-warning"><i class="fas fa-exclamation-triangle"></i> Panic Button</button>
+                        </li>
+                        <li class="list-group-item">
+                            <button id="alertsButton" class="btn btn-success"><i class="fas fa-bell"></i> Safety Alerts</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Loading spinner -->
+                <div id="loading" class="spinner" style="display:none;">Loading...</div>
+            </div>
+        </div>
+
+        <div class="visuals mt-4" style="flex: 1;">
+            <h2>Engaging Visuals</h2>
+            <div id="map"></div> <!-- Map will be displayed here -->
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Include SweetAlert library -->
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([51.505, -0.09], 13); // Set initial view (latitude, longitude, zoom level)
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Add a marker at the initial location
+        const marker = L.marker([51.505, -0.09]).addTo(map)
+            .bindPopup('You are here!')
+            .openPopup();
+
+        // Panic Button Functionality
+        document.getElementById('panicButton').addEventListener('click', function() {
+            // Show SweetAlert on success or error
+            fetch('/api/send-alert', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: 'Emergency! Please respond immediately.',
+                    phoneNumbers: ['+9182145434', '100'] // Replace with actual registered numbers
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Alert Sent!',
+                        text: 'Your emergency contacts have been notified.'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to send alert. Please try again.'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong while sending the alert.'
+                });
+            });
+        });
+
+        // Real-time Location Tracking Functionality
+        document.getElementById('locationButton').addEventListener('click', function() {
+            document.getElementById('loading').style.display = 'block'; // Show loading spinner
+
+            navigator.geolocation.getCurrentPosition(position => {
+                document.getElementById('loading').style.display = 'none'; // Hide spinner when location is retrieved
+                const { latitude, longitude } = position.coords;
+                alert(`Your location: Latitude: ${latitude}, Longitude: ${longitude}`);
+                // You can add a marker or display this location on the map
+            }, () => {
+                document.getElementById('loading').style.display = 'none'; // Hide spinner if location fetch fails
+                alert('Unable to retrieve your location.');
+            });
+        });
+
+        // Emergency Contact Form Functionality
+        document.getElementById('emergencyButton').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Emergency Contact',
+                text: 'Emergency contact form opened!',
+                icon: 'info'
+            });
+        });
+
+        // Safety Alerts Functionality
+        document.getElementById('alertsButton').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Safety Alerts',
+                text: 'Safety alerts opened!',
+                icon: 'info'
+            });
+        });
+    </script>
+</body>
+</html>

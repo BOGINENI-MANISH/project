@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Contact Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Contact List Styles */
+        .contact-list {
+            margin-top: 20px;
+        }
+
+        .contact-item {
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Add Emergency Contact</h2>
+        <div class="form-group">
+            <label for="contactName">Name</label>
+            <input type="text" id="contactName" required>
+        </div>
+        <div class="form-group">
+            <label for="contactNumber">Phone Number</label>
+            <input type="tel" id="contactNumber" required>
+        </div>
+        <button id="addContactButton">Add Contact</button>
+
+        <div class="contact-list" id="contactList">
+            <h3>Emergency Contacts:</h3>
+            <!-- Contacts will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        const addContactButton = document.getElementById('addContactButton');
+        const contactList = document.getElementById('contactList');
+
+        addContactButton.addEventListener('click', function() {
+            const contactName = document.getElementById('contactName').value;
+            const contactNumber = document.getElementById('contactNumber').value;
+
+            if (contactName && contactNumber) {
+                const contactItem = document.createElement('div');
+                contactItem.classList.add('contact-item');
+                contactItem.textContent = `${contactName}: ${contactNumber}`;
+
+                contactList.appendChild(contactItem);
+
+                // Clear the input fields
+                document.getElementById('contactName').value = '';
+                document.getElementById('contactNumber').value = '';
+            } else {
+                alert('Please enter both name and phone number.');
+            }
+        });
+    </script>
+
+</script>
+
+</body>
+</html>

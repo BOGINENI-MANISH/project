@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .navbar .nav-link {
+            color: #333;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .navbar .nav-link:hover {
+            color: #007bff;
+        }
+
+        /* Header Section */
+        h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-top: 40px;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Features Section */
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 50px 0;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            width: 300px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+        }
+        .feature-card i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .feature-card button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .feature-card button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .feature-card button:active {
+            background-color: #004099;
+            transform: scale(1);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            text-align: center;
+            font-size: 18px;
+            color: #007bff;
+            margin: 20px 0;
+        }
+        .spinner::after {
+            content: " ";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #007bff;
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Map Styles */
+        #map {
+            height: 500px;
+            margin-top: 50px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .feature-card {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .feature-card {
+                width: 45%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" href="#">CAUTIO</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="features.html">Features</a>
+            <a class="nav-link" href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <h1>Explore Key Features</h1>
+
+    <!-- Features Section -->
+    <div class="features container">
+        <div class="feature-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Real-time Location Tracking</h3>
+            <button id="locationButton">Track Location</button>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-phone-alt"></i>
+            <h3>Emergency Contact Form</h3>
+            <a href="emergency.html"><button id="emergencyButton">Open Contact Form</button></a>
+
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Panic Button</h3>
+            <button id="panicButton">Send Alert</button>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-bell"></i>
+            <h3>Safety Alerts</h3>
+            <a href="community.html"><button id="safety alerts">Show Alerts</button></a>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="spinner" style="display:none;">Loading...</div>
+
+    <!-- Map Section -->
+    <div class="container">
+        <div id="map"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([51.505, -0.09], 13);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Add a marker at the initial location
+        const marker = L.marker([51.505, -0.09]).addTo(map)
+            .bindPopup('You are here!')
+            .openPopup();
+
+        // Panic Button Functionality
+        document.getElementById('panicButton').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will send an emergency alert to your contacts!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, send it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Make a POST request to send an alert using Twilio
+                    fetch('/api/send-alert', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: 'Emergency! Please respond immediately.',
+                            phoneNumbers: ['+919381465866', '+18582812769'] // Replace with actual registered numbers
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Alert Sent!',
+                                text: 'Your emergency contacts have been notified.'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to send alert. Please try again.'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong while sending the alert.'
+                        });
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire(
+                        'Cancelled',
+                        'Your emergency alert was not sent :)',
+                        'info'
+                    );
+                }
+            });
+        });
+
+        // Real-time Location Tracking Functionality
+        document.getElementById('locationButton').addEventListener('click', function() {
+            document.getElementById('loading').style.display = 'block';
+
+            navigator.geolocation.getCurrentPosition(position => {
+                document.getElementById('loading').style.display = 'none';
+                const { latitude, longitude } = position.coords;
+                alert(`Your location: Latitude: ${latitude}, Longitude: ${longitude}`);
+                map.setView([latitude, longitude], 13);
+                marker.setLatLng([latitude, longitude])
+                      .bindPopup('You are here!')
+                      .openPopup();
+            }, () => {
+                document.getElementById('loading').style.display = 'none';
+                alert('Unable to retrieve location.');
+            });
+        });
+       </script>
+<!-- Leaflet for map functionality -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- SweetAlert for popups -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="script.js"></script>
+</body>
+</html>

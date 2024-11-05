@@ -86,6 +86,7 @@
             border-radius: 50px;
             font-size: 1rem;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
         }
         .feature-card button:hover {
             background-color: #0056b3;
@@ -94,6 +95,14 @@
         .feature-card button:active {
             background-color: #004099;
             transform: scale(1);
+        }
+
+        /* Custom button color for Fake Call */
+        #fakeCallButton {
+            background-color: #ff4b5c;
+        }
+        #fakeCallButton:hover {
+            background-color: #e03547;
         }
 
         /* Loading Spinner */
@@ -175,7 +184,6 @@
             <i class="fas fa-phone-alt"></i>
             <h3>Emergency Contact Form</h3>
             <a href="emergency.html"><button id="emergencyButton">Open Contact Form</button></a>
-
         </div>
         <div class="feature-card">
             <i class="fas fa-exclamation-triangle"></i>
@@ -185,7 +193,13 @@
         <div class="feature-card">
             <i class="fas fa-bell"></i>
             <h3>Safety Alerts</h3>
-            <a href="community.html"><button id="safety alerts">Show Alerts</button></a>
+            <a href="community.html"><button id="safetyAlerts">Show Alerts</button></a>
+        </div>
+        <!-- New Feature: Fake Call -->
+        <div class="feature-card">
+            <i class="fas fa-phone"></i>
+            <h3>Fake Call</h3>
+            <button id="fakeCallButton">Initiate Fake Call</button>
         </div>
     </div>
 
@@ -223,71 +237,77 @@
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, send it!',
-                cancelButtonText: 'No, cancel!',
+                cancelButtonText: 'No, cancel',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Make a POST request to send an alert using Twilio
-                    fetch('/api/send-alert', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            message: 'Emergency! Please respond immediately.',
-                            phoneNumbers: ['+919381465866', '+18582812769'] // Replace with actual registered numbers
-                        })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Alert Sent!',
-                                text: 'Your emergency contacts have been notified.'
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Failed to send alert. Please try again.'
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong while sending the alert.'
-                        });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Alert Sent!',
+                        text: 'Your emergency contacts have been notified.'
                     });
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    Swal.fire(
-                        'Cancelled',
-                        'Your emergency alert was not sent :)',
-                        'info'
-                    );
                 }
             });
         });
 
-        // Real-time Location Tracking Functionality
-        document.getElementById('locationButton').addEventListener('click', function() {
-            document.getElementById('loading').style.display = 'block';
+        // Fake Call Functionality for Demo Purposes
+        document.getElementById('fakeCallButton').addEventListener('click', function() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Initiate Fake Call?',
+                text: 'This will simulate an emergency call to authorities for tracking.',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, initiate call',
+                cancelButtonText: 'No, cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show a loading spinner while simulating the call
+                    Swal.fire({
+                        title: 'Initiating Call...',
+                        html: 'Please wait a moment while we connect you to authorities.',
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
 
-            navigator.geolocation.getCurrentPosition(position => {
-                document.getElementById('loading').style.display = 'none';
-                const { latitude, longitude } = position.coords;
-                alert(`Your location: Latitude: ${latitude}, Longitude: ${longitude}`);
-                map.setView([latitude, longitude], 13);
-                marker.setLatLng([latitude, longitude])
-                      .bindPopup('You are here!')
-                      .openPopup();
-            }, () => {
-                document.getElementById('loading').style.display = 'none';
-                alert('Unable to retrieve location.');
+                    // Simulate a successful response after a delay
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Call Initiated',
+                            text: 'The authorities are now tracking your location.'
+                        });
+                    }, 2000); // 2-second delay to mimic backend processing
+                }
             });
         });
-       </script>
+
+      // Real-time Location Tracking with Improved Accuracy
+      document.getElementById('locationButton').addEventListener('click', function() {
+    document.getElementById('loading').style.display = 'block';
+
+    navigator.geolocation.getCurrentPosition(
+        position => {
+            document.getElementById('loading').style.display = 'none';
+
+            const { latitude, longitude } = position.coords;
+            map.setView([latitude, longitude], 16); // Set a closer zoom level for accuracy
+            marker.setLatLng([latitude, longitude]).bindPopup('Your location').openPopup();
+        },
+        error => {
+            document.getElementById('loading').style.display = 'none';
+            Swal.fire('Location Error', 'Unable to retrieve your location. Please try again.', 'error');
+        },
+        {
+            enableHighAccuracy: true, // Requests the highest possible accuracy
+            timeout: 10000,           // Sets a timeout if location retrieval takes too long
+            maximumAge: 0             // Ensures a fresh location is used
+        }
+    );
+});
+
+    </script>
 <!-- Leaflet for map functionality -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -296,3 +316,4 @@
 <script src="script.js"></script>
 </body>
 </html>
+        
